@@ -42,7 +42,7 @@ public class QuantCompareService {
      * @return
      * @throws APIException
      */
-    public static QuantCompare getQuantCompare(Integer id) throws APIException{
+    public static QuantCompare get(Integer id) throws APIException{
         QuantCompare quantCompare = null;
         Session session = null;
         try {

@@ -45,7 +45,7 @@ public class ExperimentService {
      * @return
      * @throws APIException
      */
-    public static MspExperiment getExperiment(Integer id) throws APIException{
+    public static MspExperiment get(Integer id) throws APIException{
         MspExperiment experiment = null;
         Session session = null;
         try {
@@ -85,7 +85,7 @@ public class ExperimentService {
                 }
                 for (String id : expIds) {
                     if (!StringUtils.isBlank(id)) {
-                        MspExperiment exp = getExperiment(Integer.parseInt(id));
+                        MspExperiment exp = get(Integer.parseInt(id));
                         if (exp != null) {
                             mspExperiments.add(exp);
                         }
@@ -122,7 +122,7 @@ public class ExperimentService {
                 }
                 for (String id : expIds) {
                     if (!StringUtils.isBlank(id)) {
-                        MspExperiment exp = getExperiment(Integer.parseInt(id));
+                        MspExperiment exp = get(Integer.parseInt(id));
                         if (exp != null) {
                             mspExperiments.add(exp);
                         }
