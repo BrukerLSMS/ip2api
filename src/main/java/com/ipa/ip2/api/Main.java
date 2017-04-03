@@ -12,6 +12,13 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws Exception {
+
+        // 1) Retrieve the list of projects by specific username
+
+        ProjectService.getAllProjects("rpark");
+
+        // 2)
+
         for( Project project : ProjectService.getAllProjects("rpark")){
             List<Quantitation> labelfreeList = QuantitationService.getAllLabelfree(project.getId());
             for(Quantitation labelfree : labelfreeList){

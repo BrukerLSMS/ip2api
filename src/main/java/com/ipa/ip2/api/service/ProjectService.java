@@ -14,6 +14,12 @@ import java.util.List;
  */
 public class ProjectService {
 
+    /**
+     * Return list of Projects for specified username
+     * @param username
+     * @return
+     * @throws APIException
+     */
     public static List<Project> getAllProjects(String username) throws APIException{
         if(StringUtils.isEmpty(username)){
             throw new APIException("Username missing!");
@@ -33,6 +39,12 @@ public class ProjectService {
         return projectList;
     }
 
+    /**
+     * Return Project based on the specified id
+     * @param id
+     * @return
+     * @throws APIException
+     */
     public static Project getProject(Integer id) throws APIException{
         Project project = null;
         Session session = null;

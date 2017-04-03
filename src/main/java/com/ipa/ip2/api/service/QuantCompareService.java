@@ -14,7 +14,13 @@ import java.util.List;
  */
 public class QuantCompareService {
 
-    public static List<QuantCompare> getAllANOVACompare(Integer projectId) throws APIException {
+    /**
+     * Return list of QuantComare for specified project id
+     * @param projectId
+     * @return
+     * @throws APIException
+     */
+    public static List<QuantCompare> list(Integer projectId) throws APIException {
         List<QuantCompare> quantCompareList = new ArrayList<QuantCompare>();
         Session session = null;
         try {
@@ -30,6 +36,12 @@ public class QuantCompareService {
         return quantCompareList;
     }
 
+    /**
+     * Return QuantCompare based on specified id
+     * @param id
+     * @return
+     * @throws APIException
+     */
     public static QuantCompare getQuantCompare(Integer id) throws APIException{
         QuantCompare quantCompare = null;
         Session session = null;

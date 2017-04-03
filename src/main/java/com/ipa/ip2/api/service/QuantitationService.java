@@ -14,6 +14,12 @@ import java.util.List;
  */
 public class QuantitationService {
 
+    /**
+     * Return list of labelfree Quantitation for specified project id.
+     * @param projectId
+     * @return
+     * @throws APIException
+     */
     public static List<Quantitation> getAllLabelfree(Integer projectId) throws APIException {
         List<Quantitation> quantitationList = new ArrayList<Quantitation>();
         Session session = null;
@@ -30,6 +36,12 @@ public class QuantitationService {
         return quantitationList;
     }
 
+    /**
+     * Return list of SILAC Quantitation for specified project id.
+     * @param projectId
+     * @return
+     * @throws APIException
+     */
     public static List<Quantitation> getAllSILAC(Integer projectId) throws APIException {
         List<Quantitation> quantitationList = new ArrayList<Quantitation>();
         Session session = null;
@@ -46,6 +58,12 @@ public class QuantitationService {
         return quantitationList;
     }
 
+    /**
+     * Return list of N15 Quantitation for specified project id.
+     * @param projectId
+     * @return
+     * @throws APIException
+     */
     public static List<Quantitation> getAllN15(Integer projectId) throws APIException {
         List<Quantitation> quantitationList = new ArrayList<Quantitation>();
         Session session = null;
@@ -62,6 +80,12 @@ public class QuantitationService {
         return quantitationList;
     }
 
+    /**
+     * Return Quantitation for specified id.
+     * @param id
+     * @return
+     * @throws APIException
+     */
     public static Quantitation get(String id) throws APIException{
         Quantitation quantitation = null;
         Session session = null;

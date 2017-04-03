@@ -14,6 +14,12 @@ import java.util.List;
  */
 public class DbSearchService {
 
+    /**
+     * Return DbSearch based on the specified id
+     * @param id
+     * @return
+     * @throws APIException
+     */
     public static DbSearch get(String id) throws APIException{
         DbSearch dbSearch = null;
         Session session = null;
