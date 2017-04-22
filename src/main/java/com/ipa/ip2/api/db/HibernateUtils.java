@@ -21,14 +21,11 @@ public class HibernateUtils {
     private static HibernateUtils hibernateUtils = null;
     private SessionFactory sessionFactory = null;
     private String database;
-    private String host;
-    private String port;
-    private String schema;
+    private String url;
     private String username;
     private String password;
     private String dialect;
     private String driverClass;
-    private StringBuilder connectionString = new StringBuilder();
 
     private HibernateUtils() throws APIException {
         databaseProps = propertiesReader.getProperties();
@@ -37,23 +34,15 @@ public class HibernateUtils {
         databaseNameDriversMap.put("ORACLE", "oracle.jdbc.driver.OracleDriver");
 
         database = databaseProps.getProperty("DATABASE");
-        host = databaseProps.getProperty("DB_HOST");
-        port = databaseProps.getProperty("DB_PORT");
-        schema = databaseProps.getProperty("DB_SCHEMA");
+        url = databaseProps.getProperty("URL");
         username = databaseProps.getProperty("DB_USERNAME");
         password = databaseProps.getProperty("DB_PASSWORD");
 
         if (database == null || database.equals("")) {
             throw new APIException("Database not found. Please provide DATABASE in the jdbc.properties");
         }
-        if (host == null || host.equals("")) {
-            throw new APIException("Host not found. Please provide DB_HOST in the jdbc.properties");
-        }
-        if (port == null || port.equals("")) {
-            throw new APIException("Port not found. Please provide DB_PORT in the jdbc.properties");
-        }
-        if (schema == null || schema.equals("")) {
-            throw new APIException("Schema not found. Please provide DB_SCHEMA in the jdbc.properties");
+        if (url == null || url.equals("")) {
+            throw new APIException("url not found. Please provide URL in the jdbc.properties");
         }
         if (username == null || username.equals("")) {
             throw new APIException("Username not found. Please provide DB_USERNAME in the jdbc.properties");
@@ -65,22 +54,9 @@ public class HibernateUtils {
         if(driverClass == null || driverClass.equals("")){
             throw new APIException("Not valid and supported database! (IP2API only supports MYSQL and ORACLE)");
         }
-        connectionString.setLength(0);
         if(database.equals("MYSQL")) {
-            connectionString.append("jdbc:mysql://");
-            connectionString.append(host);
-            connectionString.append(":");
-            connectionString.append(port);
-            connectionString.append("/");
-            connectionString.append(schema);
             dialect = "org.hibernate.dialect.MySQLDialect";
         } else if (database.equals("ORACLE")) {
-            connectionString.append("jdbc:oracle:thin:@");
-            connectionString.append(host);
-            connectionString.append(":");
-            connectionString.append(port);
-            connectionString.append(":");
-            connectionString.append(schema);
             dialect = "org.hibernate.dialect.Oracle12cDialect";
         }
     }
@@ -99,11 +75,9 @@ public class HibernateUtils {
                 Properties props = configuration.getProperties();
                 props.setProperty("hibernate.dialect", dialect);
                 props.setProperty("hibernate.connection.driver_class", driverClass);
-                props.setProperty("hibernate.connection.url", connectionString.toString());
+                props.setProperty("hibernate.connection.url", url);
                 props.setProperty("hibernate.connection.username", username);
                 props.setProperty("hibernate.connection.password", password);
-                StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
-                        .applySettings(configuration.getProperties());
                 configuration.setProperties(props);
                 sessionFactory = configuration
                         .buildSessionFactory();

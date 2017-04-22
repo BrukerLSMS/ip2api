@@ -15,11 +15,12 @@ public class Main {
 
         // 1) Retrieve the list of projects by specific username
 
-        ProjectService.getAllProjects("rpark");
+        ProjectService.getAllProjects("ip2test");
 
         // 2)
 
-        for( Project project : ProjectService.getAllProjects("rpark")){
+        for( Project project : ProjectService.getAllProjects("ip2test")){
+            System.out.println("Project name -> " + project.getName());
             List<Quantitation> labelfreeList = QuantitationService.getAllLabelfree(project.getId());
             for(Quantitation labelfree : labelfreeList){
                 if(labelfree.isVerified()) {

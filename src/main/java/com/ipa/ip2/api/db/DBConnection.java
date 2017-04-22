@@ -20,12 +20,9 @@ public class DBConnection {
     private static DBConnection dbConnection = null;
     private Connection connection = null;
     private String database;
-    private String host;
-    private String port;
-    private String schema;
+    private String url;
     private String username;
     private String password;
-    private StringBuilder connectionString = new StringBuilder();
 
     private DBConnection() throws APIException{
         databaseProps = propertiesReader.getProperties();
@@ -34,23 +31,15 @@ public class DBConnection {
         databaseNameDriversMap.put("ORACLE", "oracle.jdbc.driver.OracleDriver");
 
         database = databaseProps.getProperty("DATABASE");
-        host = databaseProps.getProperty("DB_HOST");
-        port = databaseProps.getProperty("DB_PORT");
-        schema = databaseProps.getProperty("DB_SCHEMA");
+        url = databaseProps.getProperty("URL");
         username = databaseProps.getProperty("DB_USERNAME");
         password = databaseProps.getProperty("DB_USERNAME");
 
         if (database == null || database.equals("")) {
             throw new APIException("Database not found. Please provide DATABASE in the jdbc.properties");
         }
-        if (host == null || host.equals("")) {
-            throw new APIException("Host not found. Please provide DB_HOST in the jdbc.properties");
-        }
-        if (port == null || port.equals("")) {
-            throw new APIException("Port not found. Please provide DB_PORT in the jdbc.properties");
-        }
-        if (schema == null || schema.equals("")) {
-            throw new APIException("Schema not found. Please provide DB_SCHEMA in the jdbc.properties");
+        if (url == null || url.equals("")) {
+            throw new APIException("URL not found. Please provide URL in the jdbc.properties");
         }
         if (username == null || username.equals("")) {
             throw new APIException("Username not found. Please provide DB_USERNAME in the jdbc.properties");
@@ -61,22 +50,6 @@ public class DBConnection {
         String driver = databaseNameDriversMap.get(database);
         if(driver == null || driver.equals("")){
             throw new APIException("Not valid and supported database! (IP2API only supports MYSQL and ORACLE)");
-        }
-        connectionString.setLength(0);
-        if(driver.equals("MYSQL")) {
-            connectionString.append("jdbc:mysql://");
-            connectionString.append(host);
-            connectionString.append(":");
-            connectionString.append(port);
-            connectionString.append("/");
-            connectionString.append(schema);
-        } else if (driver.equals("ORACLE")) {
-            connectionString.append("jdbc:oracle:thin:@");
-            connectionString.append(host);
-            connectionString.append(":");
-            connectionString.append(port);
-            connectionString.append(":");
-            connectionString.append(schema);
         }
     }
 
@@ -91,7 +64,7 @@ public class DBConnection {
         try {
             if (connection.isClosed()) {
                 connection = DriverManager
-                        .getConnection(connectionString.toString(), username, password);
+                        .getConnection(url, username, password);
                 System.out.println("Connection open successfully!");
             }
         } catch (SQLException e) {

@@ -130,6 +130,13 @@
         <artifactId>mysql-connector-java</artifactId>
         <version>5.1.39</version>
     </dependency>
+    <dependency>
+        <groupId>com.oracle</groupId>
+        <artifactId>ojdbc6</artifactId>
+        <version>14</version>
+        <scope>system</scope>
+        <systemPath>${basedir}/lib/ojdbc6.jar</systemPath>
+    </dependency>
 
 </dependencies>
 
@@ -158,6 +165,21 @@
             </configuration>
         </plugin>
 
+        <!-- Make this jar executable -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+                <archive>
+                    <manifest>
+                        <addClasspath>true</addClasspath>
+                        <mainClass>com.ipa.ip2.api.Main</mainClass>
+                        <classpathPrefix>dependency-jars/</classpathPrefix>
+                    </manifest>
+                </archive>
+            </configuration>
+        </plugin>
+
         <!-- Copy project dependency -->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -172,7 +194,7 @@
                     </goals>
                     <configuration>
                         <!-- exclude junit, we need runtime dependency only -->
-                        <includeScope>runtime</includeScope>
+                        <includeScope></includeScope>
                         <outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
                     </configuration>
                 </execution>
