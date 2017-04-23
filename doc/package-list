@@ -1,0 +1,10 @@
+com.ipa.ip2.api
+com.ipa.ip2.api.dao
+com.ipa.ip2.api.db
+com.ipa.ip2.api.exception
+com.ipa.ip2.api.model
+com.ipa.ip2.api.reader
+com.ipa.ip2.api.service
+com.ipa.ip2.api.util
+com.ipa.ip2.api.util.dtaselect
+com.ipa.ip2.api.util.seq
