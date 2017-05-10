@@ -115,9 +115,17 @@ public class ExperimentService {
         Session session = null;
         try {
             if(!StringUtils.isBlank(experimentIds)) {
-                for (String id : experimentIds.split(" ")) {
-                    if (!StringUtils.isBlank(id)) {
-                        expIds.add(id);
+                if(experimentIds.contains(",")) {
+                    for (String id : experimentIds.split(",")) {
+                        if (!StringUtils.isBlank(id)) {
+                            expIds.add(id);
+                        }
+                    }
+                }else{
+                    for (String id : experimentIds.split(" ")) {
+                        if (!StringUtils.isBlank(id)) {
+                            expIds.add(id);
+                        }
                     }
                 }
                 for (String id : expIds) {
