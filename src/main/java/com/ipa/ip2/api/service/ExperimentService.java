@@ -118,13 +118,13 @@ public class ExperimentService {
                 if(experimentIds.contains(",")) {
                     for (String id : experimentIds.split(",")) {
                         if (!StringUtils.isBlank(id)) {
-                            expIds.add(id);
+                            expIds.add(id.trim());
                         }
                     }
                 }else{
                     for (String id : experimentIds.split(" ")) {
                         if (!StringUtils.isBlank(id)) {
-                            expIds.add(id);
+                            expIds.add(id.trim());
                         }
                     }
                 }
