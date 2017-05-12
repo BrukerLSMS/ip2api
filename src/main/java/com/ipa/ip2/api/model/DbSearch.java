@@ -19,9 +19,11 @@ import javax.persistence.Transient;
 import java.util.List;
 import java.io.*;
 
+import com.ipa.ip2.api.db.HibernateUtils;
 import com.ipa.ip2.api.util.DTASelectFilterReader;
 import com.ipa.ip2.api.util.DatabaseUtil;
 import com.ipa.ip2.api.util.FileFilterUtil;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 
@@ -191,6 +193,13 @@ public class DbSearch implements Serializable {
     }
 
     public String getResultPath() {
+        if(!StringUtils.isBlank(resultPath)){
+            try {
+                return HibernateUtils.getInstance().getRelativePath() + resultPath;
+            } catch (Exception e){
+                System.err.println(e.getMessage());
+            }
+        }
         return resultPath;
     }
 
@@ -215,6 +224,13 @@ public class DbSearch implements Serializable {
     }
 
     public String getParameterFile() {
+        if(!StringUtils.isBlank(parameterFile)){
+            try {
+                return HibernateUtils.getInstance().getRelativePath() + parameterFile;
+            } catch (Exception e){
+                System.err.println(e.getMessage());
+            }
+        }
         return parameterFile;
     }
 

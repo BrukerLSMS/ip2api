@@ -1,6 +1,7 @@
 package com.ipa.ip2.api.model;
 
 
+import com.ipa.ip2.api.db.HibernateUtils;
 import com.ipa.ip2.api.reader.LabelFreeStatReader;
 import com.ipa.ip2.api.util.PathUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -110,6 +111,13 @@ public class Quantitation implements Serializable {
     }
 
     public String getPath() {
+        if(!org.apache.commons.lang.StringUtils.isBlank(path)){
+            try {
+                return HibernateUtils.getInstance().getRelativePath() + path;
+            } catch (Exception e){
+                System.err.println(e.getMessage());
+            }
+        }
         return path;
     }
 

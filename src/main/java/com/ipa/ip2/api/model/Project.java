@@ -3,6 +3,9 @@
 */
 package com.ipa.ip2.api.model;
 
+import com.ipa.ip2.api.db.HibernateUtils;
+import org.apache.commons.lang.StringUtils;
+
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -84,6 +87,13 @@ public class Project implements Serializable {
     }
 
     public String getHomeFolder() {
+        if(!StringUtils.isBlank(homeFolder)){
+            try {
+                return HibernateUtils.getInstance().getRelativePath() + homeFolder;
+            } catch (Exception e){
+                System.err.println(e.getMessage());
+            }
+        }
         return homeFolder;
     }
 

@@ -5,6 +5,9 @@
 
 package com.ipa.ip2.api.model;
 
+import com.ipa.ip2.api.db.HibernateUtils;
+import org.apache.commons.lang.StringUtils;
+
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -133,7 +136,14 @@ public class QuantCompare implements Serializable {
      * @return the path
      */
     public String getPath() {
-	return path;
+        if(!StringUtils.isBlank(path)){
+            try {
+                return HibernateUtils.getInstance().getRelativePath() + path;
+            } catch (Exception e){
+                System.err.println(e.getMessage());
+            }
+        }
+        return path;
     }
 
     /**

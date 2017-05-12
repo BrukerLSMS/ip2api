@@ -4,7 +4,6 @@
 
 <hibernate-configuration>
    <session-factory>
-      <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
       <property name="hibernate.hbm2ddl.auto">update</property>
       <property name="show_sql">false</property>
       <mapping class="com.ipa.ip2.api.model.DbSearch"/>

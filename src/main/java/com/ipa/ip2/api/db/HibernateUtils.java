@@ -2,6 +2,7 @@ package com.ipa.ip2.api.db;
 
 import com.ipa.ip2.api.exception.APIException;
 import com.ipa.ip2.api.util.PropertiesReader;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -26,6 +27,7 @@ public class HibernateUtils {
     private String password;
     private String dialect;
     private String driverClass;
+    private String relativePath;
 
     private HibernateUtils() throws APIException {
         databaseProps = propertiesReader.getProperties();
@@ -37,21 +39,25 @@ public class HibernateUtils {
         url = databaseProps.getProperty("URL");
         username = databaseProps.getProperty("DB_USERNAME");
         password = databaseProps.getProperty("DB_PASSWORD");
+        relativePath = databaseProps.getProperty("DATABASE_RELATIVE_PATH");
 
-        if (database == null || database.equals("")) {
+        if (StringUtils.isBlank(database)) {
             throw new APIException("Database not found. Please provide DATABASE in the jdbc.properties");
         }
-        if (url == null || url.equals("")) {
+        if (StringUtils.isBlank(url)) {
             throw new APIException("url not found. Please provide URL in the jdbc.properties");
         }
-        if (username == null || username.equals("")) {
+        if (StringUtils.isBlank(username)) {
             throw new APIException("Username not found. Please provide DB_USERNAME in the jdbc.properties");
         }
-        if (password == null || password.equals("")) {
+        if (StringUtils.isBlank(password)) {
             throw new APIException("Password not found. Please provide DB_PASSWORD in the jdbc.properties");
         }
+        if (null == relativePath){
+            relativePath = "";
+        }
         driverClass = databaseNameDriversMap.get(database);
-        if(driverClass == null || driverClass.equals("")){
+        if(StringUtils.isBlank(driverClass)){
             throw new APIException("Not valid and supported database! (IP2API only supports MYSQL and ORACLE)");
         }
         if(database.equals("MYSQL")) {
@@ -102,5 +108,13 @@ public class HibernateUtils {
             e.printStackTrace();
             throw new APIException("Error while closing the session factory.");
         }
+    }
+
+    public String getRelativePath() {
+        return relativePath;
+    }
+
+    public void setRelativePath(String relativePath) {
+        this.relativePath = relativePath;
     }
 }

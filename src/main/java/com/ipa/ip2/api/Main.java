@@ -34,8 +34,8 @@ public class Main {
             }
         }
 
-        /*for( Project project : ProjectService.getAllProjects("rpark")){
-            List<QuantCompare> annovaCompareList = QuantCompareService.getAllANOVACompare(project.getId());
+        /*for( Project project : ProjectService.getAllProjects("ip2test")){
+            List<QuantCompare> annovaCompareList = QuantCompareService.list(project.getId());
             for(QuantCompare quantCompare : annovaCompareList){
                 for( MspExperiment exp : ExperimentService.getAllExperimentsForQuantitationIds(quantCompare.getQuantitationIds())){
                     System.out.println(exp.getId());
