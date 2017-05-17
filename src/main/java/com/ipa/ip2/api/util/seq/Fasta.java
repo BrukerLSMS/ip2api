@@ -1,9 +1,10 @@
 package com.ipa.ip2.api.util.seq;
 
 import java.io.UnsupportedEncodingException;
+import java.util.regex.Pattern;
+
 //import java.util.ArrayList;
 //import java.util.List;
-import java.util.regex.*;
 
 /**
  * Created by amit on 15/02/17.

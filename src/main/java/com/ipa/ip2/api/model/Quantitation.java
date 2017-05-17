@@ -2,23 +2,13 @@ package com.ipa.ip2.api.model;
 
 
 import com.ipa.ip2.api.db.HibernateUtils;
-import com.ipa.ip2.api.reader.LabelFreeStatReader;
+import com.ipa.ip2.api.util.OsCheck;
 import com.ipa.ip2.api.util.PathUtil;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
+import javax.persistence.*;
 import java.io.File;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-
-import javax.persistence.Transient;
-import javax.persistence.GenerationType;
-import javax.persistence.GeneratedValue;
 import java.util.Date;
 
 /**
@@ -113,7 +103,17 @@ public class Quantitation implements Serializable {
     public String getPath() {
         if(!org.apache.commons.lang.StringUtils.isBlank(path)){
             try {
-                return HibernateUtils.getInstance().getRelativePath() + path;
+                OsCheck.OSType ostype = OsCheck.getOperatingSystemType();
+                switch (ostype) {
+                    case Windows:
+                        path = (HibernateUtils.getInstance().getRelativePath() + path).replaceAll("/", File.separator);
+                        break;
+                    case MacOS:
+                    case Linux:
+                    case Other:
+                        path = HibernateUtils.getInstance().getRelativePath() + path;
+                        break;
+                }
             } catch (Exception e){
                 System.err.println(e.getMessage());
             }

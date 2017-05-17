@@ -4,8 +4,8 @@ package com.ipa.ip2.api.util.dtaselect;
 import com.ipa.ip2.api.model.ProteinGroup;
 import com.ipa.ip2.api.util.seq.Fasta;
 
-import java.lang.String;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by amit on 15/02/17.

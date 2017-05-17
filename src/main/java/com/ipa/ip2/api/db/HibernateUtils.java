@@ -4,7 +4,6 @@ import com.ipa.ip2.api.exception.APIException;
 import com.ipa.ip2.api.util.PropertiesReader;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
 import java.util.HashMap;

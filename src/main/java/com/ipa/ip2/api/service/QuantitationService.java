@@ -2,7 +2,6 @@ package com.ipa.ip2.api.service;
 
 import com.ipa.ip2.api.db.HibernateUtils;
 import com.ipa.ip2.api.exception.APIException;
-import com.ipa.ip2.api.model.MspExperiment;
 import com.ipa.ip2.api.model.Quantitation;
 import org.hibernate.Session;
 

@@ -1,31 +1,17 @@
 package com.ipa.ip2.api.model;
 
-import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import javax.persistence.GenerationType;
-import javax.persistence.GeneratedValue;
-
-import javax.persistence.Transient;
-import java.util.List;
-import java.io.*;
-
 import com.ipa.ip2.api.db.HibernateUtils;
 import com.ipa.ip2.api.util.DTASelectFilterReader;
 import com.ipa.ip2.api.util.DatabaseUtil;
 import com.ipa.ip2.api.util.FileFilterUtil;
+import com.ipa.ip2.api.util.OsCheck;
 import org.apache.commons.lang.StringUtils;
 
+import javax.persistence.*;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by amit on 15/02/17.
@@ -195,7 +181,17 @@ public class DbSearch implements Serializable {
     public String getResultPath() {
         if(!StringUtils.isBlank(resultPath)){
             try {
-                return HibernateUtils.getInstance().getRelativePath() + resultPath;
+                OsCheck.OSType ostype = OsCheck.getOperatingSystemType();
+                switch (ostype) {
+                    case Windows:
+                        resultPath = (HibernateUtils.getInstance().getRelativePath() + resultPath).replaceAll("/", File.separator);
+                        break;
+                    case MacOS:
+                    case Linux:
+                    case Other:
+                        resultPath = HibernateUtils.getInstance().getRelativePath() + resultPath;
+                        break;
+                }
             } catch (Exception e){
                 System.err.println(e.getMessage());
             }
@@ -226,7 +222,17 @@ public class DbSearch implements Serializable {
     public String getParameterFile() {
         if(!StringUtils.isBlank(parameterFile)){
             try {
-                return HibernateUtils.getInstance().getRelativePath() + parameterFile;
+                OsCheck.OSType ostype = OsCheck.getOperatingSystemType();
+                switch (ostype) {
+                    case Windows:
+                        parameterFile = (HibernateUtils.getInstance().getRelativePath() + parameterFile).replaceAll("/", File.separator);
+                        break;
+                    case MacOS:
+                    case Linux:
+                    case Other:
+                        parameterFile = HibernateUtils.getInstance().getRelativePath() + parameterFile;
+                        break;
+                }
             } catch (Exception e){
                 System.err.println(e.getMessage());
             }

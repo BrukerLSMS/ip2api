@@ -2,7 +2,6 @@ package com.ipa.ip2.api.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  * This class represents the basic "user" object in AppFuse that allows for authentication

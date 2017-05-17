@@ -4,23 +4,13 @@
 package com.ipa.ip2.api.model;
 
 import com.ipa.ip2.api.db.HibernateUtils;
+import com.ipa.ip2.api.util.OsCheck;
 import org.apache.commons.lang.StringUtils;
 
+import javax.persistence.*;
+import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import javax.persistence.GenerationType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "project")
@@ -89,7 +79,17 @@ public class Project implements Serializable {
     public String getHomeFolder() {
         if(!StringUtils.isBlank(homeFolder)){
             try {
-                return HibernateUtils.getInstance().getRelativePath() + homeFolder;
+                OsCheck.OSType ostype = OsCheck.getOperatingSystemType();
+                switch (ostype) {
+                    case Windows:
+                        homeFolder = (HibernateUtils.getInstance().getRelativePath() + homeFolder).replaceAll("/", File.separator);
+                        break;
+                    case MacOS:
+                    case Linux:
+                    case Other:
+                        homeFolder = HibernateUtils.getInstance().getRelativePath() + homeFolder;
+                        break;
+                }
             } catch (Exception e){
                 System.err.println(e.getMessage());
             }

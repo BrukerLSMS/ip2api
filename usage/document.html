@@ -1,0 +1,922 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>IP2 API usage document</title>
+    <meta name="description" content="IP2API document">
+    <meta name="author" content="Amit Patel">
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+<main class="content">
+    <div class="card">
+        <div class="card__content">
+            <article class="post single">
+                <header class="post__header">
+                    <h1 class="alpha post__title" itemprop="name headline">
+                        IP2 API Usage
+                    </h1>
+                </header>
+                <section class="post__content">
+                    <p> IP2 platform creates multiple types of quantitative output files as analysis of the data and uses tabular or graphical tools for showing in web browser. Graphical web user interface is great tool to easy access data for scientists.</p>
+                    <p> Meanwhile, for automation and high throughput data access, we designed IP2 API to access output files through any applications outside the IP2.</p>
+                    <h3 id="table-of-contents">Table of contents</h3>
+                    <ul>
+                        <li><a href="#installation">Installation</a></li>
+                        <li><a href="#why-you-should-document-your-code">Supported parsers</a></li>
+                        <li><a href="#installing-npm-dependencies">Examples</a></li>
+                    </ul>
+                    <h3 id="installation">Installation</h3>
+                    <p><strong><i>JDK Version notes</i></strong></p>
+                    <p>The IP2 API supports JDK 1.7 or higher.  Note that we have currently tested this implementation with JDK 1.7 and 1.8</p>
+                    <p><strong><i>API usage</i></strong></p>
+                    <p>Unzip the ip2api_1_0_0.zip (You may already done this).</p>
+                    <p>Set your CLASSPATH to include the "ip2api.jar" file obtained from the download, as well as the current directory. Assuming you unzipped ip2api-1_0_0.zip in /home the following would work - <p><strong>export CLASSPATH=$CLASSPATH:/home/ip2api_1_0_0/ip2api.jar:. </strong></p></p>
+                    <p>If you want to use the parser in your existing java project then add ip2api.jar file as your project library.</p>
+                    <h3 id="why-you-should-document-your-code">Why you should document your code</h3>
+                    <p>There are many reasons why you should document your code, but we won’t be getting into specifics in this article. The main reason I will evoke here is that it allows your code to be more concise and clear, and this is extremely important when you are working in a team environment.</p>
+                    <p>Working on large scale projects with multiple files, deadlines, employees leaving, code refactorings &amp; rewrites, these things make it hard to keep track.</p>
+                    <p>Having a up-to-date documentation will allow you to:</p>
+                    <ul>
+                        <li>Remember the code you wrote 6 months ago</li>
+                        <li>Easily bring someone new into the project</li>
+                        <li>Easily understand each other’s code more clearly</li>
+                        <li>Document business rules and complex algorythms</li>
+                        <li>Document dependencies between modules and services</li>
+                    </ul>
+                    <h3 id="1-installing-npm-dependencies">1. Installing NPM dependencies</h3>
+                    <p>We will need a couple of NodeJS packages for documenting our application:</p>
+                    <ul>
+                        <li>Dgeni, our documentation generator</li>
+                        <li>Dgeni Packages, which are a collection of dgeni packages for generating documentation from source code</li>
+                        <li>Canonical Path (optional), used to generate absolute paths for your source files</li>
+                        <li>LoDash (optional), JavaScript utility library</li>
+                    </ul>
+                    <p>We can easily install all of those dependencies using NPM:</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">npm</span> <span class="nx">i</span> <span class="nx">dgeni</span> <span class="nx">dgeni</span><span class="o">-</span><span class="nx">packages</span> <span class="nx">canonical</span><span class="o">-</span><span class="nx">path</span> <span class="nx">lodash</span> <span class="o">--</span><span class="nx">save</span><span class="o">-</span><span class="nx">dev</span>
+</code></pre>
+                    </div>
+                    <p>You will also need to use Gulp or Grunt to run Dgeni, so I suggest you install it. In my case, it’s already in use in my project so it doesn’t require any installation. Please note that you can also run Dgeni directly in Node, you would only need to create a script for the generation.</p>
+                    <p>If you are not using Gulp or Grunt in your project, install it globally as this will allow you to follow along and generate the documentation</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">npm</span> <span class="nx">i</span> <span class="nx">gulp</span> <span class="o">-</span><span class="nx">g</span>
+</code></pre>
+                    </div>
+                    <h3 id="2-create-folder-structure">2. Create folder structure</h3>
+                    <p>First thing we are going to do is create a <code class="highlighter-rouge">docs</code> folder where we will have our configuration files, our static content as well as the actual documentation. In this case, I opted to simply put it in the same directory under <code class="highlighter-rouge">build</code>, but you could package it in a <code class="highlighter-rouge">dist</code> folder if you want.</p>
+                    <p>Create the following folder structure in the root folder of your application</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="err">├──</span> <span class="nx">docs</span><span class="o">/</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="nx">app</span><span class="o">/</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="nx">config</span><span class="o">/</span>
+<span class="err">│</span>   <span class="err">│</span>  <span class="err">├──</span> <span class="nx">processors</span><span class="o">/</span>
+<span class="err">│</span>   <span class="err">│</span>  <span class="err">├──</span> <span class="nx">templates</span><span class="o">/</span>
+<span class="err">│</span>   <span class="err">│</span>  <span class="err">├──</span> <span class="nx">index</span><span class="p">.</span><span class="nx">js</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="nx">content</span><span class="o">/</span>
+</code></pre>
+                    </div>
+                    <p>Under <code class="highlighter-rouge">config</code>, we will be creating our configuration file (index.js) and we will also be adding our Processors and Templates. In the future you can also add Services and Tag Definitions (to parse your own custom tags)</p>
+                    <p>Under <code class="highlighter-rouge">content</code>, we will be adding our static documentation. Dgeni reads <code class="highlighter-rouge">.md</code> files by default (using the ngDocFileReader) and will convert them to HTML partials once it’s setup correctly.</p>
+                    <h3 id="3-setup-configuration-file">3. Setup configuration file</h3>
+                    <p>Now, let’s open up <code class="highlighter-rouge">/docs/config/index.js</code>, and let’s start configuring this beast !</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'canonical-path'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">packagePath</span> <span class="o">=</span> <span class="nx">__dirname</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">Package</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'dgeni'</span><span class="p">).</span><span class="nx">Package</span><span class="p">;</span>
+
+<span class="c1">// Create and export a new Dgeni package</span>
+<span class="c1">// We will use Gulp later on to generate that package</span>
+<span class="c1">// Think of packages as containers, our 'myDoc' package contains other packages</span>
+<span class="c1">// which themselves include processors, services, templates...</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Package</span><span class="p">(</span><span class="s1">'myDoc'</span><span class="p">,</span> <span class="p">[</span>
+    <span class="nx">require</span><span class="p">(</span><span class="s1">'dgeni-packages/ngdoc'</span><span class="p">),</span>
+    <span class="nx">require</span><span class="p">(</span><span class="s1">'dgeni-packages/nunjucks'</span><span class="p">)</span>
+<span class="p">])</span>
+</code></pre>
+                    </div>
+                    <p>Alright, so we’ve loaded Dgeni, our dgeni packages dependencies and created a new package for us to generate documentation. Next step, we will tell Dgeni which files we want to process and where to output them</p>
+                    <h4 id="setup-the-file-reading-and-writing">Setup the file reading and writing</h4>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="p">.</span><span class="nx">config</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">log</span><span class="p">,</span> <span class="nx">readFilesProcessor</span><span class="p">,</span> <span class="nx">writeFilesProcessor</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">// Set the log level to 'info', switch to 'debug' when troubleshooting</span>
+    <span class="nx">log</span><span class="p">.</span><span class="nx">level</span> <span class="o">=</span> <span class="s1">'info'</span><span class="p">;</span>
+
+    <span class="c1">// Specify the base path used when resolving relative paths to source and output files</span>
+    <span class="nx">readFilesProcessor</span><span class="p">.</span><span class="nx">basePath</span> <span class="o">=</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">packagePath</span><span class="p">,</span> <span class="s1">'../..'</span><span class="p">);</span>
+
+    <span class="c1">// Specify our source files that we want to extract</span>
+    <span class="nx">readFilesProcessor</span><span class="p">.</span><span class="nx">sourceFiles</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span> <span class="na">include</span><span class="p">:</span> <span class="s1">'src/app/**/**/*.js'</span><span class="p">,</span> <span class="na">basePath</span><span class="p">:</span> <span class="s1">'src/app'</span> <span class="p">},</span> <span class="c1">// All of our application files</span>
+    <span class="p">];</span>
+
+    <span class="c1">// Use the writeFilesProcessor to specify the output folder for the extracted files</span>
+    <span class="nx">writeFilesProcessor</span><span class="p">.</span><span class="nx">outputFolder</span> <span class="o">=</span> <span class="s1">'docs/build'</span><span class="p">;</span>
+
+<span class="p">})</span>
+</code></pre>
+                    </div>
+                    <h4 id="setup-the-templates">Setup the templates</h4>
+                    <p>Next, let’s specify where are custom templates are located</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="p">.</span><span class="nx">config</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">templateFinder</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Specify where the templates are located</span>
+    <span class="nx">templateFinder</span><span class="p">.</span><span class="nx">templateFolders</span><span class="p">.</span><span class="nx">unshift</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">packagePath</span><span class="p">,</span> <span class="s1">'templates'</span><span class="p">));</span>
+<span class="p">})</span>
+</code></pre>
+                    </div>
+                    <p>Looks pretty simple so far? We are merely using the default Dgeni processors to specify how we want to process and then convert our source files. Next, let’s setup how we want to convert the source files for each document type</p>
+                    <h4 id="setup-the-dgeni-processors">Setup the Dgeni processors</h4>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="p">.</span><span class="nx">config</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">computePathsProcessor</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">// Here we are defining what to output for our docType Module</span>
+    <span class="c1">//</span>
+    <span class="c1">// Each angular module will be extracted to it's own partial</span>
+    <span class="c1">// and will act as a container for the various Components, Controllers, Services in that Module</span>
+    <span class="c1">// We are basically specifying where we want the output files to be located</span>
+    <span class="nx">computePathsProcessor</span><span class="p">.</span><span class="nx">pathTemplates</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+        <span class="na">docTypes</span><span class="p">:</span> <span class="p">[</span><span class="s1">'module'</span><span class="p">],</span>
+        <span class="na">pathTemplate</span><span class="p">:</span> <span class="s1">'${area}/${name}'</span><span class="p">,</span>
+        <span class="na">outputPathTemplate</span><span class="p">:</span> <span class="s1">'partials/${area}/${name}.html'</span>
+    <span class="p">});</span>
+
+    <span class="c1">// Doing the same thing but for regular types like Services, Controllers, etc...</span>
+    <span class="c1">// By default they are grouped in a componentGroup and processed</span>
+    <span class="c1">// via the generateComponentGroupsProcessor internally in Dgeni</span>
+    <span class="nx">computePathsProcessor</span><span class="p">.</span><span class="nx">pathTemplates</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+        <span class="na">docTypes</span><span class="p">:</span> <span class="p">[</span><span class="s1">'componentGroup'</span><span class="p">],</span>
+        <span class="na">pathTemplate</span><span class="p">:</span> <span class="s1">'${area}/${moduleName}/${groupType}'</span><span class="p">,</span>
+        <span class="na">outputPathTemplate</span><span class="p">:</span> <span class="s1">'partials/${area}/${moduleName}/${groupType}.html'</span>
+    <span class="p">});</span>
+
+<span class="p">})</span>
+</code></pre>
+                    </div>
+                    <p>And… that’s it! Although Dgeni as been lightly configured, if you we’re to run a Gulp/Grunt task, and even though we haven’t actually started documenting anything, we can see the Dgeni pipeline and how it’s going through each different type of processors and performing various actions.</p>
+                    <p>But we’ll discuss about setup for generating code later on, now’s let’s talk about creating static documentation.</p>
+                    <h3 id="4-creating-static-documentation">4. Creating static documentation</h3>
+                    <p>You may be wondering, Why would I want to do static documentation? Well, you may want to document other things besides the code. You may have a Developer guide, REST API References, Tutorials, Notes, Information regarding Unit &amp; E2E tests, libraries behind used in the project… basically anything you can think of!</p>
+                    <p>Once you load the <code class="highlighter-rouge">dgeni-packages</code> module Dgeni is able to parse <code class="highlighter-rouge">@ngdoc</code> tags. We can actually use the <code class="highlighter-rouge">overview</code> tag from ngDoc to create our static documentation, but wouldn’t it be nice if we kept the tag as-is and just created a new doctype for Dgeni to parse? That’s exactly what we are going to do!</p>
+                    <p>In this example we’ll add a simple developer guide, just to show you how easy it is to had static documentation.</p>
+                    <p>Let’s start out by creating these Markdown files</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="err">├──</span> <span class="nx">docs</span><span class="o">/</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="nx">app</span><span class="o">/</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="nx">config</span><span class="o">/</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="nx">content</span><span class="o">/</span>
+<span class="err">│</span>   <span class="err">│</span>  <span class="err">├──</span> <span class="nx">api</span><span class="o">/</span>
+<span class="err">│</span>   <span class="err">│</span>  <span class="err">│</span>   <span class="err">├──</span> <span class="nx">index</span><span class="p">.</span><span class="nx">md</span>
+<span class="err">│</span>   <span class="err">│</span>  <span class="err">├──</span> <span class="nx">guide</span><span class="o">/</span>
+<span class="err">│</span>   <span class="err">│</span>  <span class="err">│</span>   <span class="err">├──</span> <span class="nx">index</span><span class="p">.</span><span class="nx">md</span>
+<span class="err">│</span>   <span class="err">│</span>  <span class="err">│</span>   <span class="err">├──</span> <span class="nx">howTo</span><span class="p">.</span><span class="nx">md</span>
+</code></pre>
+                    </div>
+                    <p>Now that we’ve created those placeholders files and folders, let’s write some content! Open up <code class="highlighter-rouge">guide/howTo.md</code> and type the following</p>
+                    <div class="language-markdown highlighter-rouge"><pre class="highlight"><code>@ngdoc content
+@name How to write documentation
+@description
+
+<span class="gh"># Lorem Ipsum</span>
+Aenean ornare odio elit, eget facilisis ipsum molestie ac. Nam bibendum a nibh ut ullamcorper.
+Donec non felis gravida, rutrum ante mattis, sagittis urna. Sed quam quam, facilisis vel cursus at.
+
+<span class="gu">## Foo</span>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin varius suscipit erat, non porta nunc molestie a.
+Nam blandit justo eget volutpat posuere. Etiam in ex fringilla, semper massa posuere, feugiat eros.
+
+<span class="gu">## Bar</span>
+Vestibulum vel tellus id felis lacinia tristique sollicitudin et lorem. Donec fermentum,
+velit nec fringilla consectetur, dolor nibh bibendum velit, sed porta augue eros ut enim.
+</code></pre>
+                    </div>
+                    <p>You can also do the same in your other 2 pages, these will serve as the index pages for the <code class="highlighter-rouge">api</code> and <code class="highlighter-rouge">guide</code> pages of our documentation app. You can also add other folders and other Markdown files if you like, Dgeni will parse the files the same way as the others and generate HTML partials. The <code class="highlighter-rouge">api</code> folder (and section) is where your code-generated documentation will be located, Dgeni uses that folder by default.</p>
+                    <h4 id="adding-our-static-content-to-dgeni">Adding our static content to Dgeni</h4>
+                    <p>Now that we’ve added static content, we need to tell Dgeni where that content is located, and setup the computePathsProcessor so we can output the content to HTML partials. Let’s do this now!</p>
+                    <p>First, let’s add the Markdown files to the sourceFiles list:</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// Remember the sourceFiles section we added earlier? Let's now add our .md file to the list !</span>
+<span class="nx">readFilesProcessor</span><span class="p">.</span><span class="nx">sourceFiles</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span> <span class="na">include</span><span class="p">:</span> <span class="s1">'src/app/**/**/*.js'</span><span class="p">,</span> <span class="na">basePath</span><span class="p">:</span> <span class="s1">'src/app'</span> <span class="p">},</span> <span class="c1">// All of our application files</span>
+
+    <span class="c1">// Our static Markdown documents</span>
+    <span class="c1">// We are specifying the path and telling Dgeni to use the ngdocFileReader</span>
+    <span class="c1">// to parse the Markdown files to HTMLs</span>
+    <span class="p">{</span> <span class="na">include</span><span class="p">:</span> <span class="s1">'docs/content/**/*.md'</span><span class="p">,</span> <span class="na">basePath</span><span class="p">:</span> <span class="s1">'docs/content'</span><span class="p">,</span> <span class="na">fileReader</span><span class="p">:</span> <span class="s1">'ngdocFileReader'</span> <span class="p">}</span>
+<span class="p">];</span>
+</code></pre>
+                    </div>
+                    <p>Now, let’s setup the computePathsProcessor to output the files to HTML partials:</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// create new compute for 'content' type doc</span>
+<span class="c1">// indexPage is something new we will be defining later</span>
+<span class="nx">computeIdsProcessor</span><span class="p">.</span><span class="nx">idTemplates</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+    <span class="na">docTypes</span><span class="p">:</span> <span class="p">[</span><span class="s1">'content'</span><span class="p">,</span> <span class="s1">'indexPage'</span><span class="p">],</span>
+    <span class="na">getId</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">fileInfo</span><span class="p">.</span><span class="nx">baseName</span><span class="p">;</span> <span class="p">},</span>
+    <span class="na">getAliases</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">[</span><span class="nx">doc</span><span class="p">.</span><span class="nx">id</span><span class="p">];</span> <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// Document this part a little bit more?</span>
+
+<span class="c1">// Build custom paths and set the outputPaths for "content" pages</span>
+<span class="nx">computePathsProcessor</span><span class="p">.</span><span class="nx">pathTemplates</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+    <span class="na">docTypes</span><span class="p">:</span> <span class="p">[</span><span class="s1">'content'</span><span class="p">],</span>
+    <span class="na">getPath</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">docPath</span> <span class="o">=</span> <span class="nx">path</span><span class="p">.</span><span class="nx">dirname</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">fileInfo</span><span class="p">.</span><span class="nx">relativePath</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">fileInfo</span><span class="p">.</span><span class="nx">baseName</span> <span class="o">!==</span> <span class="s1">'index'</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">docPath</span> <span class="o">=</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">docPath</span><span class="p">,</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">fileInfo</span><span class="p">.</span><span class="nx">baseName</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">docPath</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="na">outputPathTemplate</span><span class="p">:</span> <span class="s1">'partials/${path}.html'</span>
+<span class="p">});</span>
+</code></pre>
+                    </div>
+                    <h4 id="create-the-content-template">Create the content template</h4>
+                    <p>We also need to create a template for our document of type <code class="highlighter-rouge">content</code> else Dgeni will throw an exception. Let’s create a <code class="highlighter-rouge">content.template.html</code> file under <code class="highlighter-rouge">/docs/config/templates</code> and include the following</p>
+                    <div class="language-handlebars highlighter-rouge"><pre class="highlight"><code>{% block content %}
+    {$ doc.description | marked $}
+{% endblock %}
+</code></pre>
+                    </div>
+                    <h3 id="5-basic-export-to-html-partials">5. Basic export to HTML partials</h3>
+                    <p>Now that most of the configuration is done, we’ll create a Gulp task to generate the documentation. Open up your <code class="highlighter-rouge">gulpfile.js</code> and add the following</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">Dgeni</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'dgeni'</span><span class="p">);</span>
+
+<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">'dgeni'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="c1">// Notice how we are specifying which config to use</span>
+    <span class="c1">// This will import the index.js from the /docs/config folder and will use that</span>
+    <span class="c1">// configuration file while generating the documentation</span>
+    <span class="kd">var</span> <span class="nx">dgeni</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Dgeni</span><span class="p">([</span><span class="nx">require</span><span class="p">(</span><span class="s1">'./docs/config'</span><span class="p">)]);</span>
+
+    <span class="c1">// Using the dgeni.generate() method</span>
+    <span class="k">return</span> <span class="nx">dgeni</span><span class="p">.</span><span class="nx">generate</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre>
+                    </div>
+                    <p>Now we can open up the command line, navigate to your project folder and run the Gulp task we wrote above.</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">gulp</span> <span class="nx">dgeni</span>
+</code></pre>
+                    </div>
+                    <p>This should be the output:</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="mi">11</span><span class="err">:</span><span class="mi">06</span><span class="err">:</span><span class="mi">17</span><span class="p">]</span> <span class="nx">Starting</span> <span class="s1">'dgeni'</span><span class="p">...</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">readFilesProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">extractJSDocCommentsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">parseTagsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">filterNgDocsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">extractTagsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">codeNameProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">computeIdsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">memberDocsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">moduleDocsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">generateComponentGroupsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">providerDocsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">collectKnownIssuesProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">computePathsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">renderDocsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">unescapeCommentsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">inlineTagProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">writeFilesProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">checkAnchorLinksProcessor</span>
+<span class="p">[</span><span class="mi">11</span><span class="err">:</span><span class="mi">06</span><span class="err">:</span><span class="mi">18</span><span class="p">]</span> <span class="nx">Finished</span> <span class="s1">'dgeni'</span> <span class="nx">after</span> <span class="mi">732</span> <span class="nx">ms</span>
+</code></pre>
+                    </div>
+                    <p>If you open up the <code class="highlighter-rouge">docs/build</code> folder you should see the exported HTML partials… but isn’t this a little bit boring? They are just plain HTML partials and are not very exciting. We have all these files, but nothing to showcase them! As mentioned previously, Dgeni doesn’t come with an application to show the output files, the developer is free to use what he/she wants.</p>
+                    <p>And we are going to do just that! We’ll be wrapping up all of our documentation in a simple Angular application.</p>
+                    <p><strong>One thing to note is that Dgeni doesn’t remove the partials while generating the docs. I advise you add another task that will clean up the <code class="highlighter-rouge">/build</code> folder before it generates the documentation.</strong></p>
+                    <h3 id="6-creating-an-angular-app-to-show-the-documentation">6. Creating an Angular app to show the documentation</h3>
+                    <p>Now let’s create the Angular app that will house and show our HTML partials. Our app will be pretty simple and will only contain:</p>
+                    <ul>
+                        <li>Root app module (app.module.js)</li>
+                        <li>Root app config &amp; state definitions (app.config.js)</li>
+                        <li>Api Controller (api.js)</li>
+                        <li>Guide Controller (guide.js)</li>
+                        <li>Index view (index.html)</li>
+                        <li>Bootstrap (for quick styling purposes)</li>
+                        <li>Angular and UI-Router (multiple ui-views)</li>
+                    </ul>
+                    <h4 id="creating-our-angular-app-files">Creating our Angular app files</h4>
+                    <p>Create <code class="highlighter-rouge">app.module.js</code> and <code class="highlighter-rouge">app.config.js</code> under <code class="highlighter-rouge">/docs/app</code> and add the following.</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// app.module.js</span>
+<span class="c1">// Creating the root app module</span>
+<span class="nx">angular</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'docs'</span><span class="p">,</span> <span class="p">[</span>
+        <span class="s1">'ui.router'</span>
+    <span class="p">]);</span>
+
+<span class="c1">// app.config.js</span>
+<span class="c1">// HTML5Mode to true, adding that config block to our root app module</span>
+<span class="nx">angular</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'docs'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">config</span><span class="p">(</span><span class="nx">config</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">config</span><span class="p">(</span><span class="nx">$locationProvider</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">// Set HTML5 Mode</span>
+    <span class="nx">$locationProvider</span><span class="p">.</span><span class="nx">html5Mode</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+
+    <span class="c1">// Later on we will define our states</span>
+
+<span class="p">}</span>
+<span class="nx">config</span><span class="p">.</span><span class="nx">$inject</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"$locationProvider"</span><span class="p">];</span>
+</code></pre>
+                    </div>
+                    <p>We’ll get back to the Controller later on, so for now create <code class="highlighter-rouge">api.js</code> and <code class="highlighter-rouge">guide.js</code> and insert the following placeholder code</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// api.js</span>
+<span class="nx">angular</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'docs'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'ApiController'</span><span class="p">,</span> <span class="nx">ApiController</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">ApiController</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="kd">var</span> <span class="nx">ctrl</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+<span class="p">}</span>
+<span class="nx">ApiController</span><span class="p">.</span><span class="nx">$inject</span> <span class="o">=</span> <span class="p">[</span><span class="s2">""</span><span class="p">];</span>
+
+<span class="c1">// guide.js</span>
+<span class="nx">angular</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'docs'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'GuideController'</span><span class="p">,</span> <span class="nx">GuideController</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">GuideController</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="kd">var</span> <span class="nx">ctrl</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+<span class="p">}</span>
+<span class="nx">GuideController</span><span class="p">.</span><span class="nx">$inject</span> <span class="o">=</span> <span class="p">[</span><span class="s2">""</span><span class="p">];</span>
+</code></pre>
+                    </div>
+                    <h3 id="creating-our-index-page">Creating our index page</h3>
+                    <p>Alright, moving on, we now need to create our index template. Create <code class="highlighter-rouge">indexPage.template.html</code> under <code class="highlighter-rouge">/docs/config/template</code>:</p>
+                    <div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;!doctype html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">ng-app=</span><span class="s">"docs"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+        <span class="nt">&lt;base</span> <span class="na">href=</span><span class="s">"/"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"viewport"</span> <span class="na">content=</span><span class="s">"width=device-width, initial-scale=1.0"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"X-UA-Compatible"</span> <span class="na">content=</span><span class="s">"IE=edge"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;title&gt;</span>Documentation<span class="nt">&lt;/title&gt;</span>
+
+        <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+
+
+        <span class="nt">&lt;nav</span> <span class="na">class=</span><span class="s">"navbar navbar-default"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+
+                <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"navbar-header"</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"navbar-brand"</span><span class="nt">&gt;</span>Documentation<span class="nt">&lt;/span&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+
+                <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav navbar-nav"</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">ui-sref=</span><span class="s">"api"</span><span class="nt">&gt;</span>API<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+                    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">ui-sref=</span><span class="s">"guide"</span><span class="nt">&gt;</span>Guide<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+                <span class="nt">&lt;/ul&gt;</span>
+
+            <span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;/nav&gt;</span>
+
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+
+            <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row"</span><span class="nt">&gt;</span>
+
+                <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"col-sm-8"</span> <span class="na">ui-view=</span><span class="s">"main"</span><span class="nt">&gt;&lt;/div&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"col-sm-3 offset-sm-1"</span> <span class="na">ui-view=</span><span class="s">"sidebar"</span><span class="nt">&gt;&lt;/div&gt;</span>
+
+            <span class="nt">&lt;/div&gt;</span>
+
+        <span class="nt">&lt;/div&gt;</span>
+
+
+        <span class="c">&lt;!-- vendors --&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//cdn.rawgit.com/angular-ui/ui-router/0.2.18/release/angular-ui-router.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+
+        <span class="c">&lt;!-- angular app --&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"src/app.module.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"src/app.config.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"src/api.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"src/guide.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+
+        <span class="c">&lt;!-- page data --&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"src/api-data.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"src/guide-data.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre>
+                    </div>
+                    <p>We could just add that index file directly in <code class="highlighter-rouge">/app</code>, but we’re actually going to generate the page using a processor we will create ourselves. Dgeni will then run the processor and output our index template.</p>
+                    <h3 id="7-creating-a-processor-for-our-angular-index-page">7. Creating a processor for our Angular index page</h3>
+                    <p>Now, let’s configure Dgeni to compile our index page. Create <code class="highlighter-rouge">index-page.js</code> under <code class="highlighter-rouge">/docs/config/processors</code></p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">indexPageProcessor</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="na">$runAfter</span><span class="p">:</span> <span class="p">[</span><span class="s1">'adding-extra-docs'</span><span class="p">],</span>
+        <span class="na">$runBefore</span><span class="p">:</span> <span class="p">[</span><span class="s1">'extra-docs-added'</span><span class="p">],</span>
+        <span class="na">$process</span><span class="p">:</span> <span class="nx">process</span>
+    <span class="p">};</span>
+
+    <span class="kd">function</span> <span class="nx">process</span><span class="p">(</span><span class="nx">docs</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="c1">// Document what this does? pushes to the docs obj the props</span>
+        <span class="nx">docs</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+            <span class="na">docType</span><span class="p">:</span> <span class="s1">'indexPage'</span><span class="p">,</span>
+            <span class="na">template</span><span class="p">:</span> <span class="s1">'indexPage.template.html'</span><span class="p">,</span>
+            <span class="na">outputPath</span><span class="p">:</span> <span class="s1">'index.html'</span><span class="p">,</span>
+            <span class="na">path</span><span class="p">:</span> <span class="s1">'index.html'</span><span class="p">,</span>
+            <span class="na">id</span><span class="p">:</span> <span class="s1">'index'</span>
+        <span class="p">});</span>
+
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre>
+                    </div>
+                    <h4 id="adding-the-index-page-processor-to-the-pipeline">Adding the index page processor to the pipeline</h4>
+                    <p>Then, we need to tell Dgeni about this new processor! Let’s add it in our config file</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// /docs/config/index.js</span>
+<span class="p">.</span><span class="nx">processor</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">'./processors/index-page'</span><span class="p">))</span>
+</code></pre>
+                    </div>
+                    <p>If we run the Gulp task we defined earlier, you’ll see this processor added to the pipeline</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">info</span><span class="err">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">indexPageProcessor</span>
+</code></pre>
+                    </div>
+                    <p>And if you look into your <code class="highlighter-rouge">build</code> folder, you’ll see the processed index.html! That might seem like an unnecessary step, but Dgeni can output all the files we need to display our documentation app in the folder of our choosing. That means that we don’t need an external process to copy the index file.</p>
+                    <h3 id="8-generating-a-list-of-pages-for-our-sidebar">8. Generating a list of pages for our sidebar</h3>
+                    <p>Now, we will need to tell Angular about all of our HTML partials. First, let’s create a javascript template so that our processors can write data to it. Create <code class="highlighter-rouge">constant.data.template.js</code> under the <code class="highlighter-rouge">templates</code> folder.</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">angular</span>
+    <span class="c1">// Injecting into our app module</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'docs'</span><span class="p">)</span>
+
+    <span class="c1">// Creating an Angular constant and rendering a list of items as JSON</span>
+    <span class="p">.</span><span class="nx">constant</span><span class="p">(</span><span class="s1">'{$ doc.name $}'</span><span class="p">,</span> <span class="p">{</span><span class="nx">$</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">items</span> <span class="o">|</span> <span class="nx">json</span> <span class="nx">$</span><span class="p">});</span>
+</code></pre>
+                    </div>
+                    <p>We’ve created a template, now we need Dgeni that grab all of our partials and store that information in our constants. For that we need to create new processors, let’s start with the processor for the API pages.</p>
+                    <h4 id="creating-the-api-processor">Creating the ‘API’ processor</h4>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// processors/api-data.js</span>
+
+<span class="kd">var</span> <span class="nx">_</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'lodash'</span><span class="p">);</span>
+
+<span class="c1">// Creating a generic method to assign all of our</span>
+<span class="c1">// data more easily (including subpages)</span>
+<span class="kd">function</span> <span class="nx">buildDocData</span><span class="p">(</span><span class="nx">doc</span><span class="p">,</span> <span class="nx">extraData</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">// So that we can create states even though our module names contain dots(.)</span>
+    <span class="c1">// in UI-Router dotted notation means it's a child state, so this is problematic</span>
+    <span class="c1">// if we are following Angular styleguides and conventions regarding</span>
+    <span class="c1">// naming of our Modules</span>
+    <span class="c1">// #hack #lazy</span>
+    <span class="kd">var</span> <span class="nx">splitName</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">);</span>
+    <span class="nx">doc</span><span class="p">.</span><span class="nx">stateName</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">camelCase</span><span class="p">(</span><span class="nx">splitName</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">assign</span><span class="p">({</span>
+        <span class="na">name</span><span class="p">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span>
+        <span class="na">stateName</span><span class="p">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">stateName</span><span class="p">,</span>
+        <span class="na">type</span><span class="p">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">docType</span><span class="p">,</span>
+        <span class="na">outputPath</span><span class="p">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">outputPath</span><span class="p">,</span>
+        <span class="na">url</span><span class="p">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span>
+    <span class="p">},</span> <span class="nx">extraData</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">apiPagesProcessor</span><span class="p">(</span><span class="nx">moduleMap</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">// Defining when the processor will run, and it's process</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="na">$runAfter</span><span class="p">:</span> <span class="p">[</span><span class="s1">'paths-computed'</span><span class="p">],</span>
+        <span class="na">$runBefore</span><span class="p">:</span> <span class="p">[</span><span class="s1">'rendering-docs'</span><span class="p">],</span>
+        <span class="na">$process</span><span class="p">:</span> <span class="nx">process</span>
+    <span class="p">};</span>
+
+    <span class="c1">// Our process method definition</span>
+    <span class="c1">// Getting all docs as a parameter</span>
+    <span class="kd">function</span> <span class="nx">process</span><span class="p">(</span><span class="nx">docs</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="kd">var</span> <span class="nx">apiPages</span> <span class="o">=</span> <span class="nx">_</span><span class="p">(</span><span class="nx">docs</span><span class="p">)</span>
+
+            <span class="c1">// Filtering our all the docs that are not in a module</span>
+            <span class="c1">// and the ones that are componentGroups</span>
+            <span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">docType</span> <span class="o">!==</span> <span class="s1">'componentGroup'</span><span class="p">;</span>
+            <span class="p">})</span>
+
+            <span class="c1">// Filtering and grouping by Module</span>
+            <span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="s1">'module'</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">groupBy</span><span class="p">(</span><span class="s1">'module'</span><span class="p">)</span>
+
+            <span class="c1">// Map of our Module Docs</span>
+            <span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">moduleDocs</span><span class="p">,</span> <span class="nx">moduleName</span><span class="p">)</span> <span class="p">{</span>
+
+                <span class="kd">var</span> <span class="nx">moduleDoc</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">docs</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="na">docType</span><span class="p">:</span> <span class="s1">'module'</span><span class="p">,</span>
+                    <span class="na">name</span><span class="p">:</span> <span class="nx">moduleName</span>
+                <span class="p">});</span>
+
+                <span class="c1">// Making sure we don't get any exceptions when the module is undefined</span>
+                <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">moduleDoc</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+
+                <span class="c1">// Calling back to our generic method to build the object</span>
+                <span class="k">return</span> <span class="nx">buildDocData</span><span class="p">(</span><span class="nx">moduleDoc</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="na">docs</span><span class="p">:</span> <span class="nx">moduleDocs</span>
+
+                    <span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">return</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">docType</span> <span class="o">!==</span> <span class="s1">'module'</span><span class="p">;</span>
+                    <span class="p">})</span>
+
+                    <span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">buildDocData</span><span class="p">)</span>
+                <span class="p">});</span>
+
+            <span class="p">})</span>
+
+            <span class="c1">// Removing null items</span>
+            <span class="p">.</span><span class="nx">filter</span><span class="p">()</span>
+
+            <span class="c1">// Get the value</span>
+            <span class="p">.</span><span class="nx">value</span><span class="p">();</span>
+
+        <span class="c1">// After all the processing is done, we push the changes to docs</span>
+        <span class="c1">// Note here that we are using our constant template defined earlier</span>
+        <span class="c1">// Name and Items are parsed with the template</span>
+        <span class="nx">docs</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+            <span class="na">name</span><span class="p">:</span> <span class="s1">'API_DATA'</span><span class="p">,</span>
+            <span class="na">template</span><span class="p">:</span> <span class="s1">'constant-data.template.js'</span><span class="p">,</span>
+            <span class="na">outputPath</span><span class="p">:</span> <span class="s1">'src/api-data.js'</span><span class="p">,</span>
+            <span class="na">items</span><span class="p">:</span> <span class="nx">apiPages</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+</code></pre>
+                    </div>
+                    <h4 id="creating-the-guide-processor">Creating the ‘Guide’ processor</h4>
+                    <p>We also need to do the same for the Guide pages, althought it’s a much simpler processor.</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// processors/guide-data.js</span>
+
+<span class="kd">var</span> <span class="nx">_</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'lodash'</span><span class="p">);</span>
+
+<span class="c1">// Once again, simple generic method to assign all our data</span>
+<span class="kd">function</span> <span class="nx">buildDocData</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">assign</span><span class="p">({</span>
+        <span class="na">name</span><span class="p">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span>
+        <span class="na">type</span><span class="p">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">docType</span><span class="p">,</span>
+        <span class="na">outputPath</span><span class="p">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">outputPath</span><span class="p">,</span>
+        <span class="na">url</span><span class="p">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">guidePagesProcessor</span><span class="p">(</span><span class="nx">moduleMap</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="na">$runAfter</span><span class="p">:</span> <span class="p">[</span><span class="s1">'paths-computed'</span><span class="p">],</span>
+        <span class="na">$runBefore</span><span class="p">:</span> <span class="p">[</span><span class="s1">'rendering-docs'</span><span class="p">],</span>
+        <span class="na">$process</span><span class="p">:</span> <span class="nx">process</span>
+    <span class="p">};</span>
+
+    <span class="kd">function</span> <span class="nx">process</span><span class="p">(</span><span class="nx">docs</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="c1">// Filtering out to get only 'content' types and</span>
+        <span class="c1">// only the ones under the 'guide' module</span>
+        <span class="kd">var</span> <span class="nx">guides</span> <span class="o">=</span> <span class="nx">_</span><span class="p">(</span><span class="nx">docs</span><span class="p">).</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">docType</span> <span class="o">===</span> <span class="s1">'content'</span> <span class="o">&amp;&amp;</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">module</span> <span class="o">===</span> <span class="s1">'guide'</span><span class="p">;</span>
+        <span class="p">})</span>
+
+        <span class="c1">// Sort them via the path, you could also add a sortOrder param</span>
+        <span class="p">.</span><span class="nx">sortBy</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">page</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">page</span><span class="p">.</span><span class="nx">path</span><span class="p">;</span>
+        <span class="p">})</span>
+
+        <span class="c1">// Mapping them with our generic method</span>
+        <span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">buildDocData</span><span class="p">)</span>
+
+        <span class="c1">// Get the value</span>
+        <span class="p">.</span><span class="nx">value</span><span class="p">();</span>
+
+        <span class="c1">// Using the same constant template but using a different</span>
+        <span class="c1">// name and file path</span>
+        <span class="nx">docs</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+            <span class="na">name</span><span class="p">:</span> <span class="s1">'GUIDE_DATA'</span><span class="p">,</span>
+            <span class="na">template</span><span class="p">:</span> <span class="s1">'constant-data.template.js'</span><span class="p">,</span>
+            <span class="na">outputPath</span><span class="p">:</span> <span class="s1">'src/guide-data.js'</span><span class="p">,</span>
+            <span class="na">items</span><span class="p">:</span> <span class="nx">guides</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+</code></pre>
+                    </div>
+                    <h4 id="adding-the-processors">Adding the processors</h4>
+                    <p>Now, we need to add those 2 processors to the Dgeni pipeline in the config file</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// /docs/config/index.js</span>
+
+<span class="c1">// Already existed</span>
+<span class="p">.</span><span class="nx">processor</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">'./processors/index-page'</span><span class="p">))</span>
+
+<span class="c1">// Let's add our API and Guide processors</span>
+<span class="p">.</span><span class="nx">processor</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">'./processors/guide-data'</span><span class="p">))</span>
+<span class="p">.</span><span class="nx">processor</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">'./processors/api-data'</span><span class="p">))</span>
+</code></pre>
+                    </div>
+                    <p>At this point it might be a good time to try running our <code class="highlighter-rouge">gulp dgeni</code> command to make sure everything is working properly and we don’t have any errors.</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="mi">13</span><span class="err">:</span><span class="mi">15</span><span class="err">:</span><span class="mi">25</span><span class="p">]</span> <span class="nx">Starting</span> <span class="s1">'dgeni'</span><span class="p">...</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">readFilesProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">extractJSDocCommentsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">parseTagsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">filterNgDocsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">extractTagsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">codeNameProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">indexPageProcessor</span> <span class="c1">// our processor for the index page</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">computeIdsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">memberDocsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">moduleDocsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">generateComponentGroupsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">providerDocsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">collectKnownIssuesProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">computePathsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">guidePagesProcessor</span> <span class="c1">// our processor for the guide pages</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">apiPagesProcessor</span> <span class="c1">// our processor for the api pages</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">renderDocsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">unescapeCommentsProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">inlineTagProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">writeFilesProcessor</span>
+<span class="nl">info</span><span class="p">:</span>    <span class="nx">running</span> <span class="nx">processor</span><span class="err">:</span> <span class="nx">checkAnchorLinksProcessor</span>
+</code></pre>
+                    </div>
+                    <h4 id="add-the-data-into-our-angular-app">Add the data into our Angular app</h4>
+                    <p>Let’s go back to our Angular app and modify the following files. We are adding our newly generated constants and binding the data directly to the view.</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// app/api.js</span>
+<span class="kd">function</span> <span class="nx">ApiController</span><span class="p">(</span><span class="nx">API_DATA</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">ctrl</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="nx">ctrl</span><span class="p">.</span><span class="nx">allPages</span> <span class="o">=</span> <span class="nx">API_DATA</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nx">ApiController</span><span class="p">.</span><span class="nx">$inject</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"API_DATA"</span><span class="p">];</span>
+
+<span class="c1">// app/guide.js</span>
+<span class="kd">function</span> <span class="nx">GuideController</span><span class="p">(</span><span class="nx">GUIDE_DATA</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">ctrl</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="nx">ctrl</span><span class="p">.</span><span class="nx">allPages</span> <span class="o">=</span> <span class="nx">GUIDE_DATA</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nx">GuideController</span><span class="p">.</span><span class="nx">$inject</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"GUIDE_DATA"</span><span class="p">];</span>
+</code></pre>
+                    </div>
+                    <h4 id="creating-our-application-states">Creating our application states</h4>
+                    <p>We also need to create states so that our Angular app can be navigated. Let’s do just that! As you will notice, it creates alot of code for 1 file, so it’s a good idea to split the routing into separate files for each section. For the case of simplicity, I opted to put all the state definitions in a single file.</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// app.config.js</span>
+<span class="kd">function</span> <span class="nx">config</span><span class="p">(</span><span class="nx">$locationProvider</span><span class="p">,</span> <span class="nx">$stateProvider</span><span class="p">,</span> <span class="nx">API_DATA</span><span class="p">,</span> <span class="nx">GUIDE_DATA</span><span class="p">,</span> <span class="nx">$urlRouterProvider</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">// Set HTML5 Mode</span>
+    <span class="nx">$locationProvider</span><span class="p">.</span><span class="nx">html5Mode</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+
+    <span class="c1">// Configure URL Router to redirect to /api</span>
+    <span class="c1">// if state doesn't exist</span>
+    <span class="nx">$urlRouterProvider</span><span class="p">.</span><span class="nx">otherwise</span><span class="p">(</span><span class="s1">'/api'</span><span class="p">);</span>
+
+    <span class="c1">// Defining our template for the sidebar</span>
+    <span class="c1">// Could've been in a partial, but it's simple</span>
+    <span class="c1">// enough that it can be a string template</span>
+    <span class="kd">var</span> <span class="nx">sidebarTemplate</span> <span class="o">=</span> <span class="s1">'&lt;h4&gt;Contents&lt;/h4&gt;'</span> <span class="o">+</span>
+        <span class="s1">'&lt;ol class="list-unstyled"&gt;'</span> <span class="o">+</span>
+        <span class="s1">'&lt;li ng-repeat="page in ctrl.allPages"&gt;'</span> <span class="o">+</span>
+        <span class="s1">'&lt;a href="/documenting-angular-dgeni"&gt;&lt;/a&gt;'</span> <span class="o">+</span>
+        <span class="s1">'&lt;ol class="list-unstyled" style="padding-left: 15px;"&gt;'</span> <span class="o">+</span>
+        <span class="s1">'&lt;li ng-repeat="child in page.docs"&gt;'</span> <span class="o">+</span>
+        <span class="s1">'&lt;a href=""&gt;&lt;/a&gt;'</span> <span class="o">+</span>
+        <span class="s1">'&lt;/li&gt;'</span> <span class="o">+</span>
+        <span class="s1">'&lt;/ol&gt;'</span> <span class="o">+</span>
+        <span class="s1">'&lt;/li&gt;'</span> <span class="o">+</span>
+        <span class="s1">'&lt;/ol&gt;'</span><span class="p">;</span>
+
+    <span class="c1">// Assign our root state for API pages to var</span>
+    <span class="c1">// Assigning the basepage as the partials</span>
+    <span class="c1">// Setup the sidebar to use our ApiController and template</span>
+    <span class="kd">var</span> <span class="nx">apiState</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">name</span><span class="p">:</span> <span class="s1">'api'</span><span class="p">,</span>
+        <span class="na">url</span><span class="p">:</span> <span class="s1">'/api'</span><span class="p">,</span>
+        <span class="na">views</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'main'</span><span class="p">:</span> <span class="p">{</span>
+                <span class="na">templateUrl</span><span class="p">:</span> <span class="s1">'partials/api.html'</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s1">'sidebar'</span><span class="p">:</span> <span class="p">{</span>
+                <span class="na">template</span><span class="p">:</span> <span class="nx">sidebarTemplate</span><span class="p">,</span>
+                <span class="na">controller</span><span class="p">:</span> <span class="s1">'ApiController as ctrl'</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Same thing for our guide page</span>
+    <span class="kd">var</span> <span class="nx">guideState</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">name</span><span class="p">:</span> <span class="s1">'guide'</span><span class="p">,</span>
+        <span class="na">url</span><span class="p">:</span> <span class="s1">'/guide'</span><span class="p">,</span>
+        <span class="na">views</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">'main'</span><span class="p">:</span> <span class="p">{</span>
+                <span class="na">templateUrl</span><span class="p">:</span> <span class="s1">'partials/guide.html'</span>
+            <span class="p">},</span>
+            <span class="s1">'sidebar'</span><span class="p">:</span> <span class="p">{</span>
+                <span class="na">template</span><span class="p">:</span> <span class="nx">sidebarTemplate</span><span class="p">,</span>
+                <span class="na">controller</span><span class="p">:</span> <span class="s1">'GuideController as ctrl'</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Using the $stateProvider from UI-Router</span>
+    <span class="c1">// to create the states in the application</span>
+    <span class="nx">$stateProvider</span><span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="nx">apiState</span><span class="p">);</span>
+    <span class="nx">$stateProvider</span><span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="nx">guideState</span><span class="p">);</span>
+
+    <span class="c1">// Looping through all of our API pages</span>
+    <span class="c1">// and dynamically creating new states based</span>
+    <span class="c1">// on the data generated by Dgeni</span>
+    <span class="nx">angular</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">API_DATA</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">parent</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="kd">var</span> <span class="nx">newState</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="na">name</span><span class="p">:</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span>
+            <span class="na">url</span><span class="p">:</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">url</span><span class="p">,</span>
+            <span class="na">views</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">'main'</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="na">templateUrl</span><span class="p">:</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">outputPath</span>
+                <span class="p">},</span>
+                <span class="s1">'sidebar'</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="na">template</span><span class="p">:</span> <span class="nx">sidebarTemplate</span><span class="p">,</span>
+                    <span class="na">controller</span><span class="p">:</span> <span class="s1">'ApiController as ctrl'</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">};</span>
+
+        <span class="c1">// Creating the states using $stateProvider</span>
+        <span class="nx">$stateProvider</span><span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="nx">newState</span><span class="p">);</span>
+
+        <span class="c1">// In the case of API, we have multiple modules and each</span>
+        <span class="c1">// of them have children, so we are doing the same thing</span>
+        <span class="c1">// here but for the child states</span>
+        <span class="nx">angular</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">parent</span><span class="p">.</span><span class="nx">docs</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+
+            <span class="kd">var</span> <span class="nx">newState</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="na">name</span><span class="p">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span>
+                <span class="na">url</span><span class="p">:</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">url</span><span class="p">,</span>
+                <span class="na">views</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">'main'</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="na">templateUrl</span><span class="p">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">outputPath</span>
+                    <span class="p">},</span>
+                    <span class="s1">'sidebar'</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="na">template</span><span class="p">:</span> <span class="nx">sidebarTemplate</span><span class="p">,</span>
+                        <span class="na">controller</span><span class="p">:</span> <span class="s1">'ApiController as ctrl'</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">};</span>
+
+            <span class="c1">// Creating the states using $stateProvider</span>
+            <span class="nx">$stateProvider</span><span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="nx">newState</span><span class="p">);</span>
+        <span class="p">});</span>
+    <span class="p">});</span>
+
+    <span class="c1">// Same thing for Guide, except in this case we only</span>
+    <span class="c1">// have 'root' pages, so no need to loop twice</span>
+    <span class="nx">angular</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">GUIDE_DATA</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">parent</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="kd">var</span> <span class="nx">newState</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="na">name</span><span class="p">:</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span>
+            <span class="na">url</span><span class="p">:</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">url</span><span class="p">,</span>
+            <span class="na">views</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">'main'</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="na">templateUrl</span><span class="p">:</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">outputPath</span>
+                <span class="p">},</span>
+                <span class="s1">'sidebar'</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="na">template</span><span class="p">:</span> <span class="nx">sidebarTemplate</span><span class="p">,</span>
+                    <span class="na">controller</span><span class="p">:</span> <span class="s1">'GuideController as ctrl'</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">};</span>
+
+        <span class="c1">// Creating the states using $stateProvider</span>
+        <span class="nx">$stateProvider</span><span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="nx">newState</span><span class="p">);</span>
+
+    <span class="p">});</span>
+
+<span class="p">}</span>
+<span class="nx">config</span><span class="p">.</span><span class="nx">$inject</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"$locationProvider"</span><span class="p">,</span> <span class="s2">"$stateProvider"</span><span class="p">,</span> <span class="s2">"API_DATA"</span><span class="p">,</span> <span class="s2">"GUIDE_DATA"</span><span class="p">,</span> <span class="s2">"$urlRouterProvider"</span><span class="p">];</span>
+</code></pre>
+                    </div>
+                    <h3 id="9-documenting-a-module-controller-directive-and-service">9. Documenting a Module, Controller, Directive and Service</h3>
+                    <p>In the interest of time, I will actually be documenting an existing AngularJS 1.5 app.</p>
+                    <p>I’m using Todd Motto’s (the owner of this blog) <a href="https://github.com/toddmotto/angular-1-5-components-app" title="AngularJS 1.5 Component app">AngularJS 1.5 Component app</a> as a living example. If you haven’t had the time to check it out, do so… it’s the best example of a .component() based application using UI-Router 1.0 beta using routed components.</p>
+                    <p>The examples from this guide are also available directly in the app, under <code class="highlighter-rouge">/docs</code>. So feel free to fork the app to see it in action, and learn about how you should be building Angular apps in 2016 at the same time!</p>
+                    <h4 id="documenting-a-module">Documenting a Module</h4>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="cm">/**
+ *
+ * @ngdoc module
+ * @name components.contact
+ *
+ * @requires ui.router
+ *
+ * @description
+ *
+ * This is the contact module. It includes all of our components for the contact feature.
+ * ## This also parses down Markdown
+ *
+ * - So you can add lists
+ * - List 2
+ *
+ * ###And regular paragraph and headlines
+ *
+ **/</span>
+</code></pre>
+                    </div>
+                    <h4 id="documenting-a-method">Documenting a Method</h4>
+                    <p>Notice how we are appending the name of the Controller (or constructor in which the method is contained) to the name so it gets linked. <code class="highlighter-rouge">@param</code> and <code class="highlighter-rouge">@return</code> are actually JSDoc methods!</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="cm">/**
+ * @ngdoc method
+ * @name ContactEditController#updateContact
+ *
+ * @param {event} event Receive the emitted event
+ * Updates the contact information
+ *
+ * @return {method} ContactService returns the updateContact method and a promise
+ */</span>
+</code></pre>
+                    </div>
+                    <h4 id="documenting-a-service">Documenting a Service</h4>
+                    <p>Adding the <code class="highlighter-rouge">@module</code> JSDoc tag allows Dgeni to understand in which module that Service is located.</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="cm">/**
+ * @ngdoc service
+ * @name ContactService
+ * @module components.contact
+ *
+ * @description Provides HTTP methods for our firebase connection.
+ *
+ * ## Lorem Ipsum 1
+ * Aenean ornare odio elit, eget facilisis ipsum molestie ac. Nam bibendum a nibh ut ullamcorper.
+ * Donec non felis gravida, rutrum ante mattis, sagittis urna. Sed quam quam, facilisis vel cursus at.
+ *
+ * ## Lorem Ipsum 2
+ * Aenean ornare odio elit, eget facilisis ipsum molestie ac. Nam bibendum a nibh ut ullamcorper.
+ * Donec non felis gravida, rutrum ante mattis, sagittis urna. Sed quam quam, facilisis vel cursus at.
+ */</span>
+</code></pre>
+                    </div>
+                    <h4 id="documenting-a-controller">Documenting a Controller</h4>
+                    <p>Controllers are a bit annoying to test because there’s no way to parse controllers in ngDoc. When you look at the Dgeni project, they recommend using the <code class="highlighter-rouge">type</code> tag when describing a Constructor, and since Controllers are Contructors, it makes sense to use it. Also notice that we are also referencing our <code class="highlighter-rouge">@module</code> so they can be linked.</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="cm">/**
+ * @ngdoc type
+ * @module components.contact
+ * @name ContactEditController
+ *
+ * @description
+ *
+ * ## Lorem Ipsum 1
+ * Aenean ornare odio elit, eget facilisis ipsum molestie ac. Nam bibendum a nibh ut ullamcorper.
+ * Donec non felis gravida, rutrum ante mattis, sagittis urna. Sed quam quam, facilisis vel cursus at.
+ *
+ * ## Lorem Ipsum 2
+ * Aenean ornare odio elit, eget facilisis ipsum molestie ac. Nam bibendum a nibh ut ullamcorper.
+ * Donec non felis gravida, rutrum ante mattis, sagittis urna. Sed quam quam, facilisis vel cursus at.
+ */</span>
+</code></pre>
+                    </div>
+                    <h4 id="documenting-a-directive--component">Documenting a Directive / Component</h4>
+                    <p>Just like Controllers, they isn’t a way to specify a type <code class="highlighter-rouge">component</code> using ngDoc. To be fair, the component method is still fairly new, so that’s not a surprise. What we can do is use the <code class="highlighter-rouge">directive</code> type and specify it’s a component somewhere in our name / description</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="cm">/**
+ * @ngdoc directive
+ * @name lengthCheck
+ * @module components.contact
+ *
+ * @description
+ *
+ * Aenean ornare odio elit, eget facilisis ipsum molestie ac. Nam bibendum a nibh ut ullamcorper.
+ * Donec non felis gravida, rutrum ante mattis, sagittis urna. Sed quam quam, facilisis vel cursus at.
+ *
+ * @usage
+ *
+ * ### How to use
+ * Aenean ornare odio elit, eget facilisis ipsum molestie ac. Nam bibendum a nibh ut ullamcorper.
+ * Donec non felis gravida, rutrum ante mattis, sagittis urna. Sed quam quam, facilisis vel cursus at.
+ **/</span>
+</code></pre>
+                    </div>
+                    <p>For more information on how to use all the available tags, you can look at <a href="https://github.com/angular/angular.js/wiki/Writing-AngularJS-Documentation" title="AngularJS - How to write documentation">AngularJS - How to write documentation</a></p>
+                    <h3 id="10-compile-and-deploy">10. Compile and deploy</h3>
+                    <p>Now that we’ve got our app up and running, and we started documenting some code, we can generate our documentation once again to see how it behaves. But… how can we look at our app? We need a server !</p>
+                    <h4 id="setting-up-a-simple-server">Setting up a simple server</h4>
+                    <p>I recommend installing John Papa’s <a href="https://github.com/johnpapa/lite-server" title="lite-server">lite-server</a> because it’s a zero-configuration &amp; SPA-friendly server. It configures BrowserSync with a middleware so you can refresh your app and it will redirect everything to index.html (and let Angular handle the routing).</p>
+                    <p>You can install it globally, go directly into the <code class="highlighter-rouge">build</code> folder and run it (it runs from the current folder by default)</p>
+                    <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">npm</span> <span class="nx">i</span> <span class="nx">lite</span><span class="o">-</span><span class="nx">server</span> <span class="o">-</span><span class="nx">g</span>
+<span class="nx">cd</span> <span class="nx">docs</span>
+<span class="nx">cd</span> <span class="nx">build</span>
+<span class="nx">lite</span><span class="o">-</span><span class="nx">server</span>
+</code></pre>
+                    </div>
+                    <p>Now, as soon as you run the server you will notice the app is not working and that’s because we never copied our application files into our <code class="highlighter-rouge">src</code> directory. You could be running the application with the files directly in the <code class="highlighter-rouge">app</code> folder, but I recommend you use Gulp (or the build tool you are using) to concatenate, minify and package your files into the <code class="highlighter-rouge">src</code> folder.</p>
+                    <p>You can also integrate it with your current process and package everything into your <code class="highlighter-rouge">dist</code> folder.</p>
+                    <h3 id="conclusion">Conclusion</h3>
+                    <p>You can check out the <a href="https://github.com/toddmotto/angular-1-5-components-app">full demo source</a> on Todd’s 1.5 component based application inside the <code class="highlighter-rouge">/docs</code> directory.</p>
+                    <p>As previously mentioned, Controllers and Components have no tags associated with them, so we do have to use some tricks up our sleeves to document those elements correctly. We could also add our own processors so we can parse specific types, just like we did for our <code class="highlighter-rouge">content</code> types for our static documentation.</p>
+                    <p>Also, Dgeni doesn’t have alot of documentation and/or tutorials, which makes it hard to learn. It was pretty much the basis of this post, not alot of people seem to know about Dgeni and I wanted to blog about it, so that others can learn :)</p>
+                    <p>Otherwise, I think Dgeni is a really powerful tool to document your Javascript application. Wrapping your code in an Angular app is one way of doing things, but there are so many possibilities. For example, Protractor is exporting all their docs to markdown files and importing them in the Jekyll website.</p>
+                    <p>That’s the real power of Dgeni, developer freedom. If only more people were using it!</p>
+                </section>
+                <div class="share">
+                    <div class="addthis_sharing_toolbox"></div>
+                </div>
+            </article>
+
+    </div>
+    </div>
+</main>
+</body>
+</html>

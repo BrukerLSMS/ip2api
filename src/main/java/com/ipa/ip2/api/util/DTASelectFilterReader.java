@@ -5,8 +5,8 @@ import com.ipa.ip2.api.util.dtaselect.Peptide;
 import com.ipa.ip2.api.util.dtaselect.Protein;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Iterator;
 

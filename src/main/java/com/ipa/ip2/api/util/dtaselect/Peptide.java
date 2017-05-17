@@ -1,6 +1,7 @@
 package com.ipa.ip2.api.util.dtaselect;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by amit on 15/02/17.

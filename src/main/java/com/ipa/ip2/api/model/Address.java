@@ -1,12 +1,11 @@
 package com.ipa.ip2.api.model;
 
-import java.io.Serializable;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import java.io.Serializable;
 
 /**
  * This class is used to represent an address with address,

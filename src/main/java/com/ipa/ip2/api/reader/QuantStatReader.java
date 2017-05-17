@@ -3,7 +3,6 @@ package com.ipa.ip2.api.reader;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.ipa.ip2.api.dao.QuantAnovaCompare;
-import com.ipa.ip2.api.exception.APIException;
 
 import java.io.File;
 import java.io.FileReader;

@@ -3,7 +3,7 @@ package com.ipa.ip2.api.service;
 import com.ipa.ip2.api.db.HibernateUtils;
 import com.ipa.ip2.api.exception.APIException;
 import com.ipa.ip2.api.model.Project;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 
 import java.util.ArrayList;

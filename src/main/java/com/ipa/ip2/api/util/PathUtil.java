@@ -2,8 +2,6 @@ package com.ipa.ip2.api.util;
 
 import com.ipa.ip2.api.model.MspExperiment;
 
-import java.io.File;
-
 /**
  * Created by amit on 15/02/17.
  */
