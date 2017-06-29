@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.*;
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -181,17 +182,7 @@ public class DbSearch implements Serializable {
     public String getResultPath() {
         if(!StringUtils.isBlank(resultPath)){
             try {
-                OsCheck.OSType ostype = OsCheck.getOperatingSystemType();
-                switch (ostype) {
-                    case Windows:
-                        resultPath = (HibernateUtils.getInstance().getRelativePath() + resultPath).replaceAll("/", File.separator);
-                        break;
-                    case MacOS:
-                    case Linux:
-                    case Other:
-                        resultPath = HibernateUtils.getInstance().getRelativePath() + resultPath;
-                        break;
-                }
+                return Paths.get(HibernateUtils.getInstance().getRelativePath(), resultPath).toString();
             } catch (Exception e){
                 System.err.println(e.getMessage());
             }
@@ -222,17 +213,7 @@ public class DbSearch implements Serializable {
     public String getParameterFile() {
         if(!StringUtils.isBlank(parameterFile)){
             try {
-                OsCheck.OSType ostype = OsCheck.getOperatingSystemType();
-                switch (ostype) {
-                    case Windows:
-                        parameterFile = (HibernateUtils.getInstance().getRelativePath() + parameterFile).replaceAll("/", File.separator);
-                        break;
-                    case MacOS:
-                    case Linux:
-                    case Other:
-                        parameterFile = HibernateUtils.getInstance().getRelativePath() + parameterFile;
-                        break;
-                }
+                return Paths.get(HibernateUtils.getInstance().getRelativePath(), parameterFile).toString();
             } catch (Exception e){
                 System.err.println(e.getMessage());
             }

@@ -3,7 +3,7 @@
 <modelVersion>4.0.0</modelVersion>
 <groupId>com.ipa.ip2</groupId>
 <artifactId>ip2api</artifactId>
-<version>1.1.0</version>
+<version>1.3.0</version>
 <name>ip2api</name>
 <description>ip2api</description>
 <developers>
@@ -38,7 +38,7 @@
     <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-math3</artifactId>
-        <version>3.6.1</version>
+        <version>3.4.1</version>
     </dependency>
     <dependency>
         <groupId>commons-lang</groupId>
@@ -137,6 +137,13 @@
         <scope>system</scope>
         <systemPath>${basedir}/lib/ojdbc6.jar</systemPath>
     </dependency>
+    <dependency>
+        <groupId>rpark.statistics</groupId>
+        <artifactId>census</artifactId>
+        <version>1</version>
+        <scope>system</scope>
+        <systemPath>${basedir}/lib/census.jar</systemPath>
+    </dependency>
 
 </dependencies>
 
@@ -173,7 +180,7 @@
                 <archive>
                     <manifest>
                         <addClasspath>true</addClasspath>
-                        <mainClass>com.ipa.ip2.api.Main</mainClass>
+                        <mainClass>com.ipa.ip2.api.samples.BasicExample</mainClass>
                         <classpathPrefix>dependency-jars/</classpathPrefix>
                     </manifest>
                 </archive>

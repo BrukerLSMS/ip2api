@@ -1,8 +1,12 @@
 package com.ipa.ip2.api.util;
 
+import com.ipa.ip2.api.exception.APIException;
+import org.apache.commons.io.FileUtils;
+
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -65,18 +69,28 @@ public class FileUtil
 
     public static boolean copyFile(String sourceDir, String fileName,
                                    String targetDir) throws IOException {
-        File source = new File(sourceDir, fileName);
-        File target = new File(targetDir, fileName);
-        boolean success = FileUtil.streamFileToFile(source, target);
-        return success;
+        File source = new File(Paths.get(sourceDir, fileName).toString());
+        File target = new File(Paths.get(targetDir, fileName).toString());
+        try {
+            FileUtils.copyFile(source, target);
+            return true;
+        }catch(Exception e){
+            System.err.println(e.getMessage());
+            return false;
+        }
     }
 
     public static boolean copyFile(String sourceDir, String fileName,
                                    String targetDir,String newFileName) throws IOException {
-        File source = new File(sourceDir, fileName);
-        File target = new File(targetDir, newFileName);
-        boolean success = FileUtil.streamFileToFile(source, target);
-        return success;
+        File source = new File(Paths.get(sourceDir, fileName).toString());
+        File target = new File(Paths.get(targetDir, newFileName).toString());
+        try {
+            FileUtils.copyFile(source, target);
+            return true;
+        }catch(Exception e){
+            System.err.println(e.getMessage());
+            return false;
+        }
     }
 
     public static boolean fileRename(String sourceDir, String srcName, String newName)
@@ -505,13 +519,13 @@ public class FileUtil
 
     public static void makeDir(String targetDir) {
         try{
-            System.out.println("makeDir::"+targetDir);
+            System.out.println("Creating directory if not exists :: "+targetDir);
             File dataFile = new File(targetDir);
             if (!dataFile.exists()) {
-                dataFile.mkdirs();
+                FileUtils.forceMkdir(dataFile);
             }
         }catch (Exception ex) {
-            System.out.println("makeDir :: "+ex.getMessage());
+            System.err.println("makeDir :: " + ex.getMessage());
         }
 
     }

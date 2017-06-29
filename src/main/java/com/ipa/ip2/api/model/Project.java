@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import javax.persistence.*;
 import java.io.File;
 import java.io.Serializable;
+import java.nio.file.Paths;
 import java.util.Date;
 
 @Entity
@@ -79,17 +80,7 @@ public class Project implements Serializable {
     public String getHomeFolder() {
         if(!StringUtils.isBlank(homeFolder)){
             try {
-                OsCheck.OSType ostype = OsCheck.getOperatingSystemType();
-                switch (ostype) {
-                    case Windows:
-                        homeFolder = (HibernateUtils.getInstance().getRelativePath() + homeFolder).replaceAll("/", File.separator);
-                        break;
-                    case MacOS:
-                    case Linux:
-                    case Other:
-                        homeFolder = HibernateUtils.getInstance().getRelativePath() + homeFolder;
-                        break;
-                }
+                return Paths.get(HibernateUtils.getInstance().getRelativePath(), homeFolder).toString();
             } catch (Exception e){
                 System.err.println(e.getMessage());
             }

@@ -27,6 +27,7 @@ public class HibernateUtils {
     private String dialect;
     private String driverClass;
     private String relativePath;
+    private String ip2HomePath;
 
     private HibernateUtils() throws APIException {
         databaseProps = propertiesReader.getProperties();
@@ -39,6 +40,7 @@ public class HibernateUtils {
         username = databaseProps.getProperty("DB_USERNAME");
         password = databaseProps.getProperty("DB_PASSWORD");
         relativePath = databaseProps.getProperty("DATABASE_RELATIVE_PATH");
+        ip2HomePath = databaseProps.getProperty("IP2_HOME_RELATIVE_PATH");
 
         if (StringUtils.isBlank(database)) {
             throw new APIException("Database not found. Please provide DATABASE in the jdbc.properties");
@@ -54,6 +56,9 @@ public class HibernateUtils {
         }
         if (null == relativePath){
             relativePath = "";
+        }
+        if (null == ip2HomePath){
+            ip2HomePath = "";
         }
         driverClass = databaseNameDriversMap.get(database);
         if(StringUtils.isBlank(driverClass)){
@@ -115,5 +120,13 @@ public class HibernateUtils {
 
     public void setRelativePath(String relativePath) {
         this.relativePath = relativePath;
+    }
+
+    public String getIp2HomePath() {
+        return ip2HomePath;
+    }
+
+    public void setIp2HomePath(String ip2HomePath) {
+        this.ip2HomePath = ip2HomePath;
     }
 }

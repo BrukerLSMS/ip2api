@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import javax.persistence.*;
 import java.io.File;
 import java.io.Serializable;
+import java.nio.file.Paths;
 import java.util.Date;
 
 /**
@@ -130,17 +131,7 @@ public class QuantCompare implements Serializable {
     public String getPath() {
         if(!StringUtils.isBlank(path)){
             try {
-                OsCheck.OSType ostype = OsCheck.getOperatingSystemType();
-                switch (ostype) {
-                    case Windows:
-                        path = (HibernateUtils.getInstance().getRelativePath() + path).replaceAll("/", File.separator);
-                        break;
-                    case MacOS:
-                    case Linux:
-                    case Other:
-                        path = HibernateUtils.getInstance().getRelativePath() + path;
-                        break;
-                }
+                return Paths.get(HibernateUtils.getInstance().getRelativePath(), path).toString();
             } catch (Exception e){
                 System.err.println(e.getMessage());
             }

@@ -1,14 +1,21 @@
 package com.ipa.ip2.api.model;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.ipa.ip2.api.dao.CensusOutExportJsonBo;
 import com.ipa.ip2.api.db.HibernateUtils;
+import com.ipa.ip2.api.exception.APIException;
 import com.ipa.ip2.api.util.OsCheck;
 import com.ipa.ip2.api.util.PathUtil;
 import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.*;
 import java.io.File;
+import java.io.FileReader;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 
 /**
@@ -100,20 +107,10 @@ public class Quantitation implements Serializable {
         this.projectId = projectId;
     }
 
-    public String getPath() {
+    public String getPath(){
         if(!org.apache.commons.lang.StringUtils.isBlank(path)){
             try {
-                OsCheck.OSType ostype = OsCheck.getOperatingSystemType();
-                switch (ostype) {
-                    case Windows:
-                        path = (HibernateUtils.getInstance().getRelativePath() + path).replaceAll("/", File.separator);
-                        break;
-                    case MacOS:
-                    case Linux:
-                    case Other:
-                        path = HibernateUtils.getInstance().getRelativePath() + path;
-                        break;
-                }
+                return Paths.get(HibernateUtils.getInstance().getRelativePath(), path).toString();
             } catch (Exception e){
                 System.err.println(e.getMessage());
             }
@@ -312,7 +309,14 @@ public class Quantitation implements Serializable {
         this.quantitationFlag = quantitationFlag;
     }
 
-    public String getExportPath() {
+    public String getExportPath() throws APIException{
+        if(!org.apache.commons.lang.StringUtils.isBlank(exportPath)){
+            try {
+                return Paths.get(HibernateUtils.getInstance().getRelativePath(), exportPath).toString();
+            } catch (Exception e){
+                throw new APIException("Export path is null");
+            }
+        }
         return exportPath;
     }
 
@@ -332,14 +336,33 @@ public class Quantitation implements Serializable {
     public String getCensusFilePath(){
         if(!StringUtils.isEmpty(quantitationType)) {
             if(quantitationType.equalsIgnoreCase("labelfree")) {
-                return this.getPath() + File.separator + "census_labelfree_out_" + id + "_stat.txt";
+                return Paths.get(this.getPath() , "census_labelfree_out_" + id + "_stat.txt").toString();
                 //} else if(quantitationType.equalsIgnoreCase("SILAC")){
             } else {
-                return this.getPath() + File.separator + "census-out.txt";
+                return Paths.get(this.getPath() , "census-out.txt").toString();
             }
         } else {
             return null;
         }
+    }
+
+    @Transient
+    public CensusOutExportJsonBo parseExportedFile() throws APIException{
+        CensusOutExportJsonBo censusOutExportJsonBo = null;
+        try {
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            censusOutExportJsonBo = gson.fromJson(new FileReader(Paths.get(this.getExportPath(), "census_labelfree_out_meta.JSON").toString()), CensusOutExportJsonBo.class);
+        } catch (Exception e){
+            if(e instanceof APIException){
+                throw e;
+            }else{
+                throw new APIException(e.getMessage());
+            }
+        } finally {
+            return censusOutExportJsonBo;
+        }
+
     }
 
 }
